@@ -29,14 +29,19 @@ function hideTweetsWithoutText() {
   });
 }
 
+function handlePageChange() {
+  if (OPTIONS.birdBathHideNoText) {
+    hideTweetsWithoutText();
+  }
+}
+
 function setupFeedObserver() {
   var container, feedObserver;
 
+  handlePageChange();
   container = document.querySelector('div.stream-container');
   feedObserver = new window.MutationObserver(function(mutations) {
-    if (OPTIONS.birdBathHideNoText) {
-      hideTweetsWithoutText();
-    }
+    handlePageChange();
   });
   feedObserver.observe(container, {
     attributes: true,
@@ -64,6 +69,7 @@ chrome.storage.sync.get("options", function (obj) {
   if (OPTIONS.birdBathHideMedia) {
     addCSS(style, "div.content-main div.AdaptiveMedia { display: none; }");
     addCSS(style, "div.content-main div.QuoteMedia { display: none; }");
+    addCSS(style, "div.content-main div.js-media-container:not(.QuoteTweet-innerContainer) { display: none; }");
   }
   if (OPTIONS.birdBathExpandFeed) {
     addCSS(style, "div.dashboard-right { display: none; }");
@@ -73,8 +79,14 @@ chrome.storage.sync.get("options", function (obj) {
   if (OPTIONS.birdBathHidePromos) {
     addCSS(style, "div.PromptbirdPrompt-streamItem { display: none; }");
   }
-  if (OPTIONS.birdBathHideFollow) {
+  if (OPTIONS.birdBathHideWhoToFollow) {
     addCSS(style, "div.WtfLargeCarouselStreamItem { display: none; }");
+  }
+  if (OPTIONS.birdBathHideRecentFollow) {
+    addCSS(style, "li.ScrollBump--recentlyFollowed { display: none; }");
+  }
+  if (OPTIONS.birdBathHideProfileBanners) {
+    addCSS(style, "div.ProfileCanopy { display: none; }");
   }
 
   addOptionsLink();
