@@ -3,6 +3,16 @@ Bird Bath
 
 A chrome extension to cleanup the Twitter interface.
 
+
+Before:
+-------
+[![](https://raw.githubusercontent.com/AMeng/bird-bath/master/screenshots/before.png)](https://raw.githubusercontent.com/AMeng/bird-bath/master/screenshots/before.png)
+
+After:
+------
+[![](https://raw.githubusercontent.com/AMeng/bird-bath/master/screenshots/after.png)](https://raw.githubusercontent.com/AMeng/bird-bath/master/screenshots/after.png)
+
+
 Options
 -------
 
