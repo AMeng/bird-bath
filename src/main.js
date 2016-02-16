@@ -77,7 +77,7 @@ chrome.storage.sync.get("options", function (obj) {
     addCSS(style, "div.content-main { width: 100%; }");
   }
   if (OPTIONS.birdBathHidePromos) {
-    addCSS(style, "div.PromptbirdPrompt-streamItem { display: none; }");
+    addCSS(style, "li.PromptbirdPrompt-streamItem { display: none; }");
   }
   if (OPTIONS.birdBathHideWhoToFollow) {
     addCSS(style, "div.WtfLargeCarouselStreamItem { display: none; }");
