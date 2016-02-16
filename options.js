@@ -5,6 +5,9 @@ function save_options() {
   var status;
 
   OPTIONS.birdBathHideMedia = document.getElementById('birdBathHideMedia').checked;
+  OPTIONS.birdBathHidePromos = document.getElementById('birdBathHidePromos').checked;
+  OPTIONS.birdBathHideFollow = document.getElementById('birdBathHideFollow').checked;
+  OPTIONS.birdBathHideNoText = document.getElementById('birdBathHideNoText').checked;
   OPTIONS.birdBathExpandFeed = document.getElementById('birdBathExpandFeed').checked;
 
   chrome.storage.sync.set({ 'options': OPTIONS });
@@ -19,12 +22,18 @@ function restore_options() {
   chrome.storage.sync.get('options', function(obj) {
     if (obj.options == undefined) {
       obj.options = {
-        birdBathHideMedia: true,
+        birdBathHideMedia: false,
+        birdBathHidePromos: true,
+        birdBathHideFollow: true,
+        birdBathHideNoText: false,
         birdBathExpandFeed: true
       };
     }
     OPTIONS = obj.options;
     document.getElementById('birdBathHideMedia').checked = obj.options.birdBathHideMedia;
+    document.getElementById('birdBathHidePromos').checked = obj.options.birdBathHidePromos;
+    document.getElementById('birdBathHideFollow').checked = obj.options.birdBathHideFollow;
+    document.getElementById('birdBathHideNoText').checked = obj.options.birdBathHideNoText;
     document.getElementById('birdBathExpandFeed').checked = obj.options.birdBathExpandFeed;
   });
 }

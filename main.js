@@ -1,12 +1,5 @@
 NodeList.prototype['forEach'] = HTMLCollection.prototype['forEach'] = Array.prototype['forEach'];
-NodeList.prototype['slice'] = HTMLCollection.prototype['slice'] = Array.prototype['slice'];
-
 var OPTIONS = {};
-chrome.storage.sync.get("options", function (obj) {
-    if (obj.options) {
-      OPTIONS = obj.options;
-    }
-});
 
 function addOptionsLink() {
   var hasOptionsLink, optionsUrl, userMenu;
@@ -22,40 +15,30 @@ function addOptionsLink() {
   }
 }
 
-function hideMedia() {
-  document.querySelectorAll("div.AdaptiveMedia").forEach(function(n) {
+function hideTweetsWithoutText() {
+  // Remove media links (so we can check for emptyness later)
+  document.querySelectorAll("a.u-hidden").forEach(function(n) {
     n.remove();
   });
-  document.querySelectorAll("div.QuoteMedia").forEach(function(n) {
-    n.remove();
-  });
-}
 
-function expandFeed() {
-  // Remove the sidebars and expand the main feed to take their place
-  document.querySelector("div.dashboard-right").remove();
-  document.querySelector("div.dashboard-left").remove();
-  document.querySelector("div.content-main").style.width = "100%";
-}
-
-function setupRefreshObserver() {
-  var container, refreshObserver;
-
-  addOptionsLink();
-  if (OPTIONS.birdBathExpandFeed) {
-    expandFeed();
-  }
-  if (OPTIONS.birdBathHideMedia) {
-    hideMedia();
-  }
-
-  container = document.querySelector('div.stream-container');
-  refreshObserver = new window.MutationObserver(function(mutations) {
-    if (OPTIONS.birdBathHideMedia) {
-      hideMedia();
+  // Delete all empty tweets (only contained media links)
+  document.querySelectorAll("p.TweetTextSize").forEach(function(n) {
+    if (n.textContent.trim().length == 0) {
+      n.parentElement.parentElement.parentElement.parentElement.remove();
     }
   });
-  refreshObserver.observe(container, {
+}
+
+function setupFeedObserver() {
+  var container, feedObserver;
+
+  container = document.querySelector('div.stream-container');
+  feedObserver = new window.MutationObserver(function(mutations) {
+    if (OPTIONS.birdBathHideNoText) {
+      hideTweetsWithoutText();
+    }
+  });
+  feedObserver.observe(container, {
     attributes: true,
     attributeOldValue: true,
     childList: false,
@@ -63,13 +46,43 @@ function setupRefreshObserver() {
   });
 }
 
-(function() {
-  var observer, target;
+function addCSS(style, cssProperty) {
+  style.sheet.insertRule(cssProperty, style.sheet.length);
+}
+
+chrome.storage.sync.get("options", function (obj) {
+  var observer, style, target;
+
+  if (obj.options) {
+    OPTIONS = obj.options;
+  }
+
+	style = document.createElement("style");
+	style.appendChild(document.createTextNode(""));
+	document.head.appendChild(style);
+
+  if (OPTIONS.birdBathHideMedia) {
+    addCSS(style, "div.content-main div.AdaptiveMedia { display: none; }");
+    addCSS(style, "div.content-main div.QuoteMedia { display: none; }");
+  }
+  if (OPTIONS.birdBathExpandFeed) {
+    addCSS(style, "div.dashboard-right { display: none; }");
+    addCSS(style, "div.dashboard-left { display: none; }");
+    addCSS(style, "div.content-main { width: 100%; }");
+  }
+  if (OPTIONS.birdBathHidePromos) {
+    addCSS(style, "div.PromptbirdPrompt-streamItem { display: none; }");
+  }
+  if (OPTIONS.birdBathHideFollow) {
+    addCSS(style, "div.WtfLargeCarouselStreamItem { display: none; }");
+  }
+
+  addOptionsLink();
 
   target = document.querySelector('body');
   observer = new window.MutationObserver(function(mutations) {
     observer.disconnect();
-    setupRefreshObserver();
+    setupFeedObserver();
   });
   observer.observe(target, { childList: true, subtree: true });
-})();
+});
