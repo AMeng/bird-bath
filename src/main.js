@@ -80,7 +80,7 @@ chrome.storage.sync.get("options", function (obj) {
     addCSS(style, "li.PromptbirdPrompt-streamItem { display: none; }");
   }
   if (OPTIONS.birdBathHideWhoToFollow) {
-    addCSS(style, "div.WtfLargeCarouselStreamItem { display: none; }");
+    addCSS(style, "li.WtfLargeCarouselStreamItem { display: none; }");
   }
   if (OPTIONS.birdBathHideRecentFollow) {
     addCSS(style, "li.ScrollBump--recentlyFollowed { display: none; }");
